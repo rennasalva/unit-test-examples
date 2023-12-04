@@ -9,8 +9,8 @@ pipeline {
                         credentialsId: 'github',
                         url: 'https://github.com/rennasalva/unit-test-examples'
             }
-    }
-
+        }
+     }
 
     
   stage("ZendPhp Agent unit-test - test coverage and fixer") {
@@ -83,5 +83,4 @@ pipeline {
           
         }
      }
-  }
-} 
+}
