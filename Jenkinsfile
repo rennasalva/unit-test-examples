@@ -27,24 +27,29 @@ pipeline {
                   echo 'Running PHP 7.4 tests...'
                   sh 'php -v && php --ri xdebug'
                   echo 'Installing from  Composer'
-                  sh 'cd $WORKSPACE && composer install --no-progress --ignore-platform-reqs'            
+                  sh 'cd $WORKSPACE/app && composer install --no-progress --ignore-platform-reqs'            
                   echo 'Running PHPUnit tests...'
-                  sh 'php $WORKSPACE/vendor/bin/phpunit -c $WORKSPACE/phpunit.xml  --log-junit $WORKSPACE/reports/report-junit.xml  --coverage-clover $WORKSPACE/reports/clover.xml --testdox-html $WORKSPACE/reports/testdox.html'
+                  sh 'php $WORKSPACE/app/vendor/bin/phpunit -c $WORKSPACE/app/phpunit.xml  --log-junit $WORKSPACE/app/reports/report-junit.xml  --coverage-clover $WORKSPACE/reports/clover.xml --testdox-html $WORKSPACE/reports/testdox.html'
                   sh 'chmod -R a+w $PWD && chmod -R a+w $WORKSPACE'
-                  junit '**/reports/*.xml'
+                }
+
+                post{
+                  success{
+                    junit '**/reports/*.xml'
+                  }
                 }
               }
         
               stage('PHP ZENDPHP Checkstyle Report') {
                 steps {
-                  sh 'vendor/bin/phpcs  --report-file=$WORKSPACE/reports/checkstyle.xml --standard=$WORKSPACE/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/vendor/  $WORKSPACE/src' 
+                  sh 'app/vendor/bin/phpcs  --report-file=$WORKSPACE/app/reports/checkstyle.xml --standard=$WORKSPACE/app/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/app/vendor/  $WORKSPACE/app/src' 
                 }
                 
               }
         
               stage('PHP ZENDPHP Mess Detection Report') {
                 steps {
-                  sh 'vendor/bin/phpmd $WORKSPACE/src xml  $WORKSPACE/phpmd.xml --reportfile $WORKSPACE/reports/pmd.xml --exclude $WORKSPACE/vendor/ --exclude autoload.php'
+                  sh 'app/vendor/bin/phpmd $WORKSPACE/app/src xml  $WORKSPACE/app/phpmd.xml --reportfile $WORKSPACE/app/reports/pmd.xml --exclude $WORKSPACE/app/vendor/ --exclude autoload.php'
                 }
               }
           
@@ -68,12 +73,11 @@ pipeline {
     
     
     stage('ANSIBLE PING') {
-      
           steps {
              sh 'ansible all -i /var/jenkins_home/ansible/hosts --module-name ping'
           }
           
-        }
+    }
         
     stage('ANSIBLE RUN PLAYBOOK') {
 
