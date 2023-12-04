@@ -68,12 +68,11 @@ pipeline {
                 }
               }
 
-               stage ('push artifact') {
+               stage('zip whole workspace'){
                   steps {
-                      zip zipFile: 'app.zip', archive: false, dir: 'app'
-                      archiveArtifacts artifacts: 'app.zip', fingerprint: true
-                  }
-          }
+                      zip zipFile: "../target.zip", archive: true, dir: "."
+                  }                    
+        }
         }
     }
 
