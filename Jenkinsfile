@@ -29,7 +29,7 @@ pipeline {
                   echo 'Installing from  Composer'
                   sh 'cd $WORKSPACE/app && composer install --no-progress --ignore-platform-reqs'            
                   echo 'Running PHPUnit tests...'
-                  sh 'php $WORKSPACE/app/vendor/bin/phpunit -c $WORKSPACE/app/phpunit.xml  --log-junit $WORKSPACE/app/reports/report-junit.xml  --coverage-clover $WORKSPACE/reports/clover.xml --testdox-html $WORKSPACE/reports/testdox.html'
+                  sh 'php $WORKSPACE/app/vendor/bin/phpunit -c $WORKSPACE/app/phpunit.xml  --log-junit $WORKSPACE/app/reports/report-junit.xml  --coverage-clover $WORKSPACE/app/reports/clover.xml --testdox-html $WORKSPACE/app/reports/testdox.html'
                   sh 'chmod -R a+w $PWD && chmod -R a+w $WORKSPACE'
                 }
 
@@ -67,9 +67,17 @@ pipeline {
                   ])
                 }
               }
+
+               stage ('push artifact') {
+                  steps {
+                      zip zipFile: 'app.zip', archive: false, dir: 'app'
+                      archiveArtifacts artifacts: 'app.zip', fingerprint: true
+                  }
+          }
         }
     }
 
+     
     
     
     stage('ANSIBLE PING') {
