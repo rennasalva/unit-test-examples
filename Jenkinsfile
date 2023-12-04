@@ -70,7 +70,8 @@ pipeline {
 
                stage('zip whole workspace'){
                   steps {
-                      zip zipFile: "target.zip", archive: false, dir: "./app"
+                      zip zipFile: "app.zip", archive: false, dir: "./app"
+                      archiveArtifacts artifacts: 'app.zip', fingerprint: true
                   }                    
         }
         }
