@@ -48,8 +48,8 @@
     #   ignore_errors: yes
 
     - name: Check Directory Deployment Exite
-        stat:
-          path: /ZendPhp/Deployment
+      stat:
+        path: /ZendPhp/Deployment
         register: register_name
 
     - name: Create Diretory /ZendPhp/Deployment
