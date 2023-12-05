@@ -47,7 +47,6 @@
     #   register: file_tar_exists
     #   ignore_errors: yes
 
-     tasks:
     - name: Check Directory Deployment Exite
         stat:
           path: /ZendPhp/Deployment
