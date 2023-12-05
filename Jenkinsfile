@@ -5,7 +5,7 @@ pipeline {
   }
   stages {
 
-     stage('Git Checkout') {
+     stage('Git Checkout Project') {
             steps {
                 script {
                         git branch: 'main',
@@ -16,7 +16,7 @@ pipeline {
      }
 
     
-  stage("ZendPhp Agent unit-test - test coverage and fixer") {
+  stage("ZendPhp Agent") {
             agent {
               docker {
                 image 'remote_zend_php_builder'
@@ -25,7 +25,7 @@ pipeline {
               }
           }
           stages {
-              stage('PHP ZENDPHP COMPOSER INSTALL') {
+              stage('ZENDPHP Composer Install') {
                 steps {
                   echo 'Running PHP 7.4 tests...'
                   sh 'php -v && php --ri xdebug'
@@ -43,14 +43,14 @@ pipeline {
                 }
               }
         
-              stage('PHP ZENDPHP Checkstyle Report') {
+              stage('ZENDPHP Checkstyle Report') {
                 steps {
                   sh 'app/vendor/bin/phpcs  --report-file=$WORKSPACE/app/reports/checkstyle.xml --standard=$WORKSPACE/app/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/app/vendor/  $WORKSPACE/app/src' 
                 }
                 
               }
         
-              stage('PHP ZENDPHP Mess Detection Report') {
+              stage('ZENDPHP Mess Detection Report') {
                 steps {
                   sh 'app/vendor/bin/phpmd $WORKSPACE/app/src xml  $WORKSPACE/app/phpmd.xml --reportfile $WORKSPACE/app/reports/pmd.xml --exclude $WORKSPACE/app/vendor/ --exclude autoload.php'
                 }
@@ -71,7 +71,7 @@ pipeline {
                 }
               }
 
-               stage('zip whole workspace'){
+               stage('Zip whole workspace'){
                   steps {
                       sh '''
                         rm -fr app.zip
@@ -82,17 +82,15 @@ pipeline {
         }
     }
 
-     
-    
-    
-    stage('ANSIBLE PING') {
+  
+    stage('Ansible Ping Server') {
           steps {
              sh 'ansible all -i /var/jenkins_home/ansible/hosts --module-name ping'
           }
           
     }
         
-    stage('ANSIBLE RUN PLAYBOOK') {
+    stage('Ansible deploy Application') {
           steps {
              sh '''
              ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=/var/jenkins_home/workspace/pipeline-unit-test-repo" -e "build=$build"
