@@ -58,7 +58,7 @@
       when: my_folder.stat.exists  
 
     - name: "Ansible Create directory if not exists"
-        file:
+      file:
         path: /ZendPhp/Deploymnet
         state: directory
         mode: 0755
