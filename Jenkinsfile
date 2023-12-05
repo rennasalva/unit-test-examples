@@ -95,10 +95,7 @@ pipeline {
     stage('ANSIBLE RUN PLAYBOOK') {
           steps {
              sh '''
-             ansible-playbook ansible/playbooks/deploy.yml  
-             -i /var/jenkins_home/ansible/hosts 
-             -e "workspace=/var/jenkins_home/workspace/pipeline-unit-test-repo" 
-             -e "build=$build"
+             ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=/var/jenkins_home/workspace/pipeline-unit-test-repo" -e "build=$build"
              '''
           }
           
