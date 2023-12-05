@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  environment{
+      build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
+  }
   stages {
 
      stage('Git Checkout') {
@@ -90,9 +93,10 @@ pipeline {
     }
         
     stage('ANSIBLE RUN PLAYBOOK') {
-
           steps {
-             sh 'ansible-playbook ansible/playbooks/play.yml  -i /var/jenkins_home/ansible/hosts '
+             sh '''
+             ansible-playbook ansible/playbooks/play.yml  -i /var/jenkins_home/ansible/hosts -e "workspace=/var/jenkins_home/workspace/pipeline-unit-test-repo" -e "build=$build"
+             '''
           }
           
         }
