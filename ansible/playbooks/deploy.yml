@@ -49,7 +49,7 @@
 
     - name: Ansible check directory.
       stat:
-        path: /ZendPhp/Deploymnet
+        path: /ZendPhp/Deployment
       register: my_folder
     
     - name: "echo if directory already existed"
@@ -59,7 +59,7 @@
 
     - name: "Ansible Create directory if not exists"
       file:
-        path: /ZendPhp/Deploymnet
+        path: /ZendPhp/Deployment
         state: directory
         mode: 0755
         group: root
@@ -90,7 +90,7 @@
     - name: Creates Directory
       ansible.builtin.file:
         # path: "{{ home }}/app_{{ build }}"
-        path: "/app_{{ build }}"
+        path: "/ZendPhp/Deployment/app_{{ build }}"
         state: directory
         mode: 777
         owner: zendphp
@@ -104,14 +104,14 @@
     - name: Extract app.zip into /app
       ansible.builtin.unarchive:
         src : "/tmp/app.zip" 
-        dest: "/app_{{ build }}"
+        dest: "/ZendPhp/Deployment/app_{{ build }}"
         owner: zendphp
         group: zendphp
         remote_src: yes
         
     - name: Create symbolic link to virtualhost
       file:
-        src: "/app_{{ build }}"
+        src: "/ZendPhp/Deployment/app_{{ build }}"
         dest: "{{document_root}}"
         owner: zendphp
         group: zendphp
