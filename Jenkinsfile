@@ -70,7 +70,10 @@ pipeline {
 
                stage('zip whole workspace'){
                   steps {
-                      zip zipFile: "app.zip", archive: true, dir: "./app"
+                      sh '''
+                        rm -fr app.zip
+                      '''
+                      zip zipFile: "app.zip", archive: false, dir: "./app"
                   }                    
             }
         }
@@ -89,7 +92,7 @@ pipeline {
     stage('ANSIBLE RUN PLAYBOOK') {
 
           steps {
-             sh 'ansible-playbook /var/jenkins_home/ansible/tasks/play.yml  -i /var/jenkins_home/ansible/hosts '
+             sh 'ansible-playbook ansible/playbooks/play.yml  -i /var/jenkins_home/ansible/hosts '
           }
           
         }
