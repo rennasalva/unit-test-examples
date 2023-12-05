@@ -51,6 +51,7 @@
       stat:
         path: /ZendPhp/Deployment
         register: register_name
+        ignore_errors: yes
 
     - name: Create Diretory /ZendPhp/Deployment
       file:
