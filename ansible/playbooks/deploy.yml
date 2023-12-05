@@ -47,6 +47,21 @@
     #   register: file_tar_exists
     #   ignore_errors: yes
 
+     tasks:
+      - name: Check Directory Deployment Exite
+        stat:
+          path: /ZendPhp/Deployment
+        register: register_name
+
+    - name: Create Diretory /ZendPhp/Deployment
+      file:
+        path: /ZendPhp/Deployment
+        state: directory
+        mode: 755
+        owner: zendphp
+        group: zendphp
+      when: not register_name.stat.exists
+
     - name: Check if zip already exists
       command: ls /tmp/app.zip 
       register: file_exists
