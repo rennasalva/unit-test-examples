@@ -47,20 +47,24 @@
     #   register: file_tar_exists
     #   ignore_errors: yes
 
-    - name: Check Directory Deployment Exite
+    - name: Ansible check directory.
       stat:
-        path: /ZendPhp/Deployment
-        register: register_name
-        ignore_errors: yes
+      path: /ZendPhp/Deploymnet
+      register: my_folder
+    
+    - name: "echo if directory already existed"
+      debug:
+        msg: "the jboss directory is already existed"
+      when: my_folder.stat.exists  
 
-    - name: Create Diretory /ZendPhp/Deployment
-      file:
-        path: /ZendPhp/Deployment
+    - name: "Ansible Create directory if not exists"
+        file:
+        path: /ZendPhp/Deploymnet
         state: directory
-        mode: 755
-        owner: zendphp
-        group: zendphp
-      when: not register_name.stat.exists
+        mode: 0755
+        group: root
+        owner: root
+      when: my_folder.stat.exists == false 
 
     - name: Check if zip already exists
       command: ls /tmp/app.zip 
