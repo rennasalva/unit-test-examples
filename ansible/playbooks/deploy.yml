@@ -48,7 +48,7 @@
     #   ignore_errors: yes
 
      tasks:
-      - name: Check Directory Deployment Exite
+    - name: Check Directory Deployment Exite
         stat:
           path: /ZendPhp/Deployment
         register: register_name
