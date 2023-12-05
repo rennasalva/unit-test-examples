@@ -1,0 +1,51 @@
+---
+- hosts: all
+  vars:
+    - user: remote_user
+    - home: /home/remote_user   
+  tasks:
+    - name: print variables
+      debug:
+        msg: "Username: {{ user }}, Home dir: {{ home }}"
+    
+    - name: Check if file already exists
+      command: ls /home/{{ user }}/myfile
+      register: file_exists
+      ignore_errors: yes
+
+    - name: create file for user
+      copy:
+        dest: "/home/{{ user }}/myfile"
+        content: |
+          line 01
+          line 02
+      when: file_exists is failed
+
+    - name: show message if file exists
+      debug:
+        msg: The user file already exists.
+      when: file_exists is succeeded
+
+    - name: Create a bz2 archive of a globbed path, while excluding specific dirnames
+      community.general.archive:
+        path:
+        - /app*
+        dest:  /home/{{ user }}/app.tar.bz2
+        exclude_path:
+        - /app/.DS_Store
+        - /app/.laminas-ci
+        format: bz2
+    
+    - name: Check if zip already exists
+      command: ls /home/{{ user }}/app.tar.bz2
+      register: file_tar_exists
+      ignore_errors: yes
+    
+    - name: Extract foo.tgz into /var/lib/foo
+      ansible.builtin.unarchive:
+        src : /home/{{ user }}/app.tar.bz2
+        dest: /var/tmp  
+        remote_src: yes
+      when: file_tar_exists is succeeded
+        
+
