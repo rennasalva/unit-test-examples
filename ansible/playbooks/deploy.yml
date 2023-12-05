@@ -49,7 +49,7 @@
 
     - name: Ansible check directory.
       stat:
-      path: /ZendPhp/Deploymnet
+        path: /ZendPhp/Deploymnet
       register: my_folder
     
     - name: "echo if directory already existed"
