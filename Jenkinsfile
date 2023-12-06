@@ -21,7 +21,7 @@ pipeline {
           steps {
            withCredentials([usernamePassword(credentialsId: 'zendphp', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
             sh "docker login cr.zend.com -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-            sh 'cd docker'
+            sh "cd $WORKSPACE/docker"
             sh 'docker-compose build'
           }
         }
