@@ -9,11 +9,11 @@ pipeline {
      stage('Docker  Build Project') {
            steps {
           
-            sh '''
-              cd docker
-              docker-compose build
-              docker-compose up -d
-           '''
+
+           withCredentials([usernamePassword(credentialsId: 'zendphp', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+          sh 'docker push shanem/spring-petclinic:latest'
+          }
         }
      }  
 
