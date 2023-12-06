@@ -5,16 +5,6 @@ pipeline {
   }
   stages {
 
-    
-     stage('Docker  Build Project') {
-          steps {
-           withCredentials([usernamePassword(credentialsId: 'zendphp', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-            sh "docker login cr.zend.com -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-            sh 'cd docker'
-            sh 'docker-compose build'
-          }
-        }
-     }  
 
      stage('Git Checkout Project') {
             steps {
@@ -25,6 +15,17 @@ pipeline {
             }
         }
      }
+
+     
+     stage('Docker  Build Project') {
+          steps {
+           withCredentials([usernamePassword(credentialsId: 'zendphp', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+            sh "docker login cr.zend.com -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+            sh 'cd docker'
+            sh 'docker-compose build'
+          }
+        }
+     }  
 
     
   stage("ZendPhp Agent") {
