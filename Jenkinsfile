@@ -5,6 +5,15 @@ pipeline {
   }
   stages {
 
+    
+     stage('Docker  Build Project') {
+           sh '''
+              cd docker/node-host
+              docker-compose build
+              docker-compose up -d
+           '''
+     }  
+
      stage('Git Checkout Project') {
             steps {
                 script {

@@ -1,0 +1,55 @@
+version: '3'
+services:
+  remote_zend_php:
+    container_name: remote_zend_php
+    image: remote_zend_php
+    build:
+      context: node-host/zendphp
+      dockerfile: Dockerfile
+      args:
+        POST_BUILD_BASH: /usr/local/sbin/post-build.sh
+    # volumes:
+    #     - $PWD/app-mezzio:/app
+    # #   - $PWD/aws-s3.sh:/tmp/script.sh
+    networks:
+      - jenkins_net    
+  remote_zend_php_2:
+    container_name: remote_zend_php_2
+    image: remote_zend_php_2
+    build:
+      context: node-host/zendphp
+      dockerfile: Dockerfile
+    # volumes:
+    #     - $PWD/app-mezzio:/app
+    #   - $PWD/aws-s3.sh:/tmp/script.sh
+    networks:
+      - jenkins_net    
+  remote_zend_php_3:
+    container_name: remote_zend_php_3
+    image: remote_zend_php_3
+    build:
+      context: node-host/zendphp
+      dockerfile: Dockerfile
+    # volumes:
+    #     - $PWD/app-mezzio:/app
+    #   - $PWD/aws-s3.sh:/tmp/script.sh
+    networks:
+      - jenkins_net  
+  remote_zend_php_builder:
+    container_name: remote_zend_php_builder
+    image: remote_zend_php_builder
+    build:
+      context: node-host/zendphp-builder
+      dockerfile: Dockerfile
+      args:
+        ZEND_EXTENSIONS_LIST: 'mysql xdebug zip xml intl curl xml pdo mbstring memcached soap ldap redis'
+        ZENDPHP_REPO_USERNAME: "${ZENDPHP_REPO_USERNAME}"
+        ZENDPHP_REPO_PASSWORD: "${ZENDPHP_REPO_PASSWORD}"
+    # volumes:
+    #    - $PWD/app-mezzio:/app
+    #   - $PWD/aws-s3.sh:/tmp/script.sh
+    networks:
+      - jenkins_net     
+networks:
+  jenkins_net:
+    external: true
