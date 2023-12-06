@@ -8,7 +8,7 @@ pipeline {
     
      stage('Docker  Build Project') {
            sh '''
-              cd docker/node-host
+              cd docker
               docker-compose build
               docker-compose up -d
            '''
