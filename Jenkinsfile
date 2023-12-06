@@ -7,11 +7,14 @@ pipeline {
 
     
      stage('Docker  Build Project') {
-           sh '''
+           steps {
+          
+            sh '''
               cd docker
               docker-compose build
               docker-compose up -d
            '''
+        }
      }  
 
      stage('Git Checkout Project') {
