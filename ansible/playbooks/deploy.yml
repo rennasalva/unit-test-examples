@@ -220,13 +220,9 @@
       copy: src={{workspace}}/ansible/templates/supervisor.tplt dest=/etc/supervisord.conf
       notify: restart supervisord
 
-    - name: Supervisor conf dir
-      file: path=/etc/supervisor.d/ state=directory
-      notify: restart supervisord
-
 
   handlers:
-    - name: Restarting "php{{ php_version }}-fpm"
+    - name: Restarting supervisord"
       service: supervisord restart
       # become: true
     
