@@ -124,14 +124,10 @@
 
 - hosts: [dev4]
   become: yes
-  become_method: sudo
   gather_facts: yes
   vars:
     - user: remote_user
     - home: /home/remote_user   
-    - workspace: ''
-    - build: ''
-    - document_root: '/document_root'
     - php_version: 7.4
     - app_url: pink.pinkinvestment.tz
     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
@@ -144,5 +140,4 @@
       apt:
         name: nginx
         state: present    
-      when: ansible_distribution == 'Ubuntu'
 ...   
