@@ -228,6 +228,6 @@
     # - name: Restarting nginx
     #   service: name=nginx state=restarted
     #   # become: true
-      - name restart supervisord
+      - name: restart supervisord
         service: supervisord state=restarted
 ...   
