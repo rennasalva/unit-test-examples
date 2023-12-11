@@ -222,8 +222,12 @@
 
 
   handlers:
-    - name: Restarting supervisord"
-      service: supervisord restart
-      # become: true
-    
+    # - name: Restarting "php{{ php_version }}-fpm"
+    #   service: name="php{{ php_version }}-fpm" state=restarted
+    #   # become: true
+    # - name: Restarting nginx
+    #   service: name=nginx state=restarted
+    #   # become: true
+      - name restart supervisord
+        service: supervisord state=restarted
 ...   
