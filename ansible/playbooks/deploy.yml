@@ -179,7 +179,7 @@
 
 
     - name: Upload ionCUBE extension configuration template for php-fpm
-      template: src=ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
+      template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
 
     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
       lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
