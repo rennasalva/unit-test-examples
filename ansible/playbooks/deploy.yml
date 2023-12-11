@@ -122,6 +122,7 @@
   #       url:http://{{ansible_default_ipv4.address}}
   #       status_code: 200
 
+# configure host
 - hosts: [dev4]
   become: yes
   gather_facts: yes
@@ -130,7 +131,7 @@
     - home: /home/remote_user   
     - php_version: 7.4
     - extension_dir: 20190902
-    - app_url: localhost
+    - app_url: default
     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
   tasks:
     - name: utente e home corrente
