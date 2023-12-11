@@ -129,6 +129,7 @@
     - user: remote_user
     - home: /home/remote_user   
     - php_version: 7.4
+    - extension_dir: 20190902
     - app_url: pink.pinkinvestment.tz
     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
   tasks:
@@ -140,6 +141,7 @@
       apt:
         name: nginx
         state: present    
+    
     
     - name: Installing "php{{ php_version }}" packages to the host(s)
       apt:
@@ -153,4 +155,32 @@
           - "php{{ php_version }}-json"
           - "php{{ php_version }}-dev"
         state: present    
+    
+    - name: Creating /var/www/html/ioncube directory
+      file:
+        path: /var/www/html/ioncube
+        state: directory
+        mode: 0755
+    
+    - name: Downloading & unarchiving ionCUBE Loader
+      unarchive:
+        src: "{{ ioncube_archive_url }}"
+        dest: /var/www/html/ioncube
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+    
+    
+    - name: Find php extensions directory
+      shell: php-config --extension-dir
+      register: php_extensions_dir
+
+    - name: Copying .so file to php extensions directory {{ php_extensions_dir.stdout }}
+      shell: cp /var/www/html/ioncube/ioncube_loader_lin_{{ php_version }}.so {{ php_extensions_dir.stdout }}/
+
+
+    - name: Upload ionCUBE extension configuration template for php-fpm
+      template: src=ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
+
+    - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
+      lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
 ...   
