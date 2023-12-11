@@ -131,7 +131,7 @@
     - home: /home/remote_user   
     - php_version: 7.4
     - extension_dir: 20190902
-    - app_url: default
+    - app_url: laravel.localhost
     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
   tasks:
     - name: utente e home corrente
@@ -189,6 +189,18 @@
 
     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
       lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
+
+
+    - name: Configuring nginx virtual host
+      template: src={{workspace}}/ansible/templates/nginx-template-http.tplt dest=/etc/nginx/sites-available/{{ app_url }}.conf
+      become: true
+      
+    - name: Creating link to enable the site
+      file:
+        src: /etc/nginx/sites-available/{{ app_url }}.conf
+        dest: /etc/nginx/sites-enabled/{{ app_url }}.conf
+        state: link
+      become: true
 
     - name: Setting server_name={{ app_url }}
       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^    server_name' line="    server_name {{ app_url }};"
