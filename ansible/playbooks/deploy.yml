@@ -123,6 +123,8 @@
   #       status_code: 200
 
 - hosts: [dev4]
+  become: yes
+  become_method: sudo
   gather_facts: yes
   vars:
     - user: remote_user
