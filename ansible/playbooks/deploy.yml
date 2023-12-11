@@ -2,7 +2,7 @@
 - hosts: all
   become: yes
   become_method: sudo
-  gather_facts: no
+  gather_facts: yes
   vars:
     - user: remote_user
     - home: /home/remote_user   
