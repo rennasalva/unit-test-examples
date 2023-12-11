@@ -9,7 +9,7 @@
     - workspace: ''
     - build: ''
     - document_root: '/document_root'
-    tasks:
+  tasks:
     - name: utente e home corrente
       debug:
         msg: "Username: {{ user }}, Home dir: {{ home }}"
