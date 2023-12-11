@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: [dev1,dev2,dev3]
   become: yes
   become_method: sudo
   gather_facts: yes
@@ -9,19 +9,10 @@
     - workspace: ''
     - build: ''
     - document_root: '/document_root'
-    - php_version: 7.4
-    - app_url: pink.pinkinvestment.tz
-    - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
-  tasks:
+    tasks:
     - name: utente e home corrente
       debug:
         msg: "Username: {{ user }}, Home dir: {{ home }}"
-
-    - name: Installing Nginx to the host(s)
-      apt:
-        name: nginx
-        state: present    
-      when: ansible_distribution == 'Ubuntu'
     
     # - name: Check if file already exists
     #   command: ls /home/{{ user }}/myfile
@@ -130,4 +121,27 @@
   #     uri:
   #       url:http://{{ansible_default_ipv4.address}}
   #       status_code: 200
+
+- hosts: [dev4]
+  gather_facts: yes
+  vars:
+    - user: remote_user
+    - home: /home/remote_user   
+    - workspace: ''
+    - build: ''
+    - document_root: '/document_root'
+    - php_version: 7.4
+    - app_url: pink.pinkinvestment.tz
+    - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+  tasks:
+    - name: utente e home corrente
+      debug:
+        msg: "Username: {{ user }}, Home dir: {{ home }}"
+
+    - name: Installing Nginx to the host(s)
+      apt:
+        name: nginx
+        state: present    
+      when: ansible_distribution == 'Ubuntu'
+      become:false
 ...   
