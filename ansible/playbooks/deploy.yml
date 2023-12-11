@@ -190,7 +190,6 @@
     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
       lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
 
-
     - name: Configuring nginx virtual host
       template: src={{workspace}}/ansible/templates/nginx-template-http.tplt dest=/etc/nginx/sites-available/{{ app_url }}.conf
       become: true
@@ -200,7 +199,7 @@
         src: /etc/nginx/sites-available/{{ app_url }}.conf
         dest: /etc/nginx/sites-enabled/{{ app_url }}.conf
         state: link
-      become: true
+      # become: true
 
     - name: Setting server_name={{ app_url }}
       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^    server_name' line="    server_name {{ app_url }};"
@@ -215,11 +214,20 @@
       notify:
         - Restarting "php{{ php_version }}-fpm"
         - Restarting nginx  
+
+
+    - name: Supervisor conf
+      copy: src={{workspace}}/ansible/templates/supervisor.tplt dest=/etc/supervisord.conf
+      notify: restart supervisord
+
+    - name: Supervisor conf dir
+      file: path=/etc/supervisor.d/ state=directory
+      notify: restart supervisord
+
+
   handlers:
     - name: Restarting "php{{ php_version }}-fpm"
-      service: name="php{{ php_version }}-fpm" state=restarted
+      service: supervisord restart
       # become: true
-    - name: Restarting nginx
-      service: name=nginx state=restarted
-      # become: true
+    
 ...   
