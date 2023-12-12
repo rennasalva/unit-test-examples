@@ -123,106 +123,106 @@
   #       status_code: 200
 
 # configure host
-- hosts: [dev4]
-  become: yes
-  gather_facts: yes
-  vars:
-    - user: remote_user
-    - home: /home/remote_user   
-    - php_version: 7.4
-    - extension_dir: 20190902
-    - app_url: laravel.localhost
-    - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
-  tasks:
-    - name: utente e home corrente
-      debug:
-        msg: "Username: {{ user }}, Home dir: {{ home }}"
+# - hosts: [dev4]
+#   become: yes
+#   gather_facts: yes
+#   vars:
+#     - user: remote_user
+#     - home: /home/remote_user   
+#     - php_version: 7.4
+#     - extension_dir: 20190902
+#     - app_url: laravel.localhost
+#     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+#   tasks:
+#     - name: utente e home corrente
+#       debug:
+#         msg: "Username: {{ user }}, Home dir: {{ home }}"
 
-    - name: Installing Nginx to the host(s)
-      apt:
-        name: nginx
-        state: present   
+#     - name: Installing Nginx to the host(s)
+#       apt:
+#         name: nginx
+#         state: present   
 
-    - name: adding  user www-data to group sudo
-      user:
-          name: 'www-data'
-          group: 'www-data'
-          shell: /sbin/nologin
-          create_home: no
-          groups: 'sudo'
-          append: yes      
+#     - name: adding  user www-data to group sudo
+#       user:
+#           name: 'www-data'
+#           group: 'www-data'
+#           shell: /sbin/nologin
+#           create_home: no
+#           groups: 'sudo'
+#           append: yes      
     
     
-    - name: Installing "php{{ php_version }}" packages to the host(s)
-      apt:
-        name:
-          - "php{{ php_version }}-fpm"         
-          - "php{{ php_version }}-cli"
-          - "php{{ php_version }}-curl"
-          - "php{{ php_version }}-mysql"
-          - "php{{ php_version }}-mbstring"
-          - "php{{ php_version }}-common"
-          - "php{{ php_version }}-json"
-          - "php{{ php_version }}-dev"
-        state: present    
+#     - name: Installing "php{{ php_version }}" packages to the host(s)
+#       apt:
+#         name:
+#           - "php{{ php_version }}-fpm"         
+#           - "php{{ php_version }}-cli"
+#           - "php{{ php_version }}-curl"
+#           - "php{{ php_version }}-mysql"
+#           - "php{{ php_version }}-mbstring"
+#           - "php{{ php_version }}-common"
+#           - "php{{ php_version }}-json"
+#           - "php{{ php_version }}-dev"
+#         state: present    
     
-    - name: Creating /var/www/html/ioncube directory
-      file:
-        path: /var/www/html/ioncube
-        state: directory
-        mode: 0755
+#     - name: Creating /var/www/html/ioncube directory
+#       file:
+#         path: /var/www/html/ioncube
+#         state: directory
+#         mode: 0755
     
-    - name: Downloading & unarchiving ionCUBE Loader
-      unarchive:
-        src: "{{ ioncube_archive_url }}"
-        dest: /var/www/html/ioncube
-        remote_src: yes
-        extra_opts: [--strip-components=1]
+#     - name: Downloading & unarchiving ionCUBE Loader
+#       unarchive:
+#         src: "{{ ioncube_archive_url }}"
+#         dest: /var/www/html/ioncube
+#         remote_src: yes
+#         extra_opts: [--strip-components=1]
     
     
-    - name: Find php extensions directory
-      shell: php-config --extension-dir
-      register: php_extensions_dir
+#     - name: Find php extensions directory
+#       shell: php-config --extension-dir
+#       register: php_extensions_dir
 
-    - name: Copying .so file to php extensions directory {{ php_extensions_dir.stdout }}
-      shell: cp /var/www/html/ioncube/ioncube_loader_lin_{{ php_version }}.so {{ php_extensions_dir.stdout }}/
+#     - name: Copying .so file to php extensions directory {{ php_extensions_dir.stdout }}
+#       shell: cp /var/www/html/ioncube/ioncube_loader_lin_{{ php_version }}.so {{ php_extensions_dir.stdout }}/
 
-    - name: Upload ionCUBE extension configuration template for php-cli
-      template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini
+#     - name: Upload ionCUBE extension configuration template for php-cli
+#       template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini
 
-    - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
-      lineinfile: dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
+#     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
+#       lineinfile: dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
 
-    - name: Upload ionCUBE extension configuration template for php-fpm
-      template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
+#     - name: Upload ionCUBE extension configuration template for php-fpm
+#       template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
 
-    - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
-      lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
+#     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
+#       lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
 
-    - name: Configuring nginx virtual host
-      template: src={{workspace}}/ansible/templates/nginx-template-http.tplt dest=/etc/nginx/sites-available/{{ app_url }}.conf
-      become: true
+#     - name: Configuring nginx virtual host
+#       template: src={{workspace}}/ansible/templates/nginx-template-http.tplt dest=/etc/nginx/sites-available/{{ app_url }}.conf
+#       become: true
       
-    - name: Creating link to enable the site
-      file:
-        src: /etc/nginx/sites-available/{{ app_url }}.conf
-        dest: /etc/nginx/sites-enabled/{{ app_url }}.conf
-        state: link
-      # become: true
+#     - name: Creating link to enable the site
+#       file:
+#         src: /etc/nginx/sites-available/{{ app_url }}.conf
+#         dest: /etc/nginx/sites-enabled/{{ app_url }}.conf
+#         state: link
+#       # become: true
 
-    - name: Setting server_name={{ app_url }}
-      lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^    server_name' line="    server_name {{ app_url }};"
-
-    
-    - name: Setting  root=/var/www/html/laravel/public
-      lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf  regexp='^    root' line="    root /var/www/html/laravel/public;"
+#     - name: Setting server_name={{ app_url }}
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^    server_name' line="    server_name {{ app_url }};"
 
     
-    - name: Setting fastcgi_pass="unix:/var/run/php/php{{ php_version }}-fpm.sock"
-      lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^        fastcgi_pass' line="        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;"
-      notify:
-        - Restarting "php{{ php_version }}-fpm"
-        - Restarting nginx  
+#     - name: Setting  root=/var/www/html/laravel/public
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf  regexp='^    root' line="    root /var/www/html/laravel/public;"
+
+    
+#     - name: Setting fastcgi_pass="unix:/var/run/php/php{{ php_version }}-fpm.sock"
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^        fastcgi_pass' line="        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;"
+#       notify:
+#         - Restarting "php{{ php_version }}-fpm"
+#         - Restarting nginx  
 
 
     # - name: Supervisor conf
