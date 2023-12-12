@@ -141,7 +141,13 @@
     - name: Installing Nginx to the host(s)
       apt:
         name: nginx
-        state: present    
+        state: present   
+
+   - name: adding existing user www-data to group sudo
+     user:
+        name: 'www-data'
+        groups: sudo
+        append: yes      
     
     
     - name: Installing "php{{ php_version }}" packages to the host(s)
