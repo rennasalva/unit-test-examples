@@ -143,10 +143,13 @@
         name: nginx
         state: present   
 
-   - name: adding existing user www-data to group sudo
+   - name: adding  user www-data to group sudo
      user:
         name: 'www-data'
-        groups: sudo
+        group: 'www-data'
+        shell: /sbin/nologin
+        create_home: no
+        groups: 'sudo'
         append: yes      
     
     
