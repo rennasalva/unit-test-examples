@@ -225,9 +225,9 @@
         - Restarting nginx  
 
 
-    - name: Supervisor conf
-      copy: src={{workspace}}/ansible/templates/supervisor.tplt dest=/etc/supervisord.conf
-      notify: restart supervisord
+    # - name: Supervisor conf
+    #   copy: src={{workspace}}/ansible/templates/supervisor.tplt dest=/etc/supervisord.conf
+      # notify: restart supervisord
 
 
   handlers:
@@ -237,6 +237,6 @@
     # - name: Restarting nginx
     #   service: name=nginx state=restarted
     #   # become: true
-      - name: restart supervisord
-        service:  name=supervisord state=restarted
+      # - name: restart supervisord
+      #   service:  name=supervisord state=restarted
 ...   
